@@ -1,0 +1,30 @@
+--- services/aiService.ts
++++ services/aiService.ts
+@@ -262,6 +262,26 @@
+   return { systemInstruction, baseContext: `${staticContext}\n\n=== KONTEKS CERITA SEJAUH INI ===\n${historyText}` };
+ };
+ 
++const BACKUP_KEYS = [
++  "AQ.Ab8RN6Jfsn5xCj8c_mEHTowOkHmYDp-erveWb3wPiVkfZKuquw",
++  "AQ.Ab8RN6K4piF0fe3XpWD73Bi9sJfouwPM2V2Sv9J7DggpwJBmqw"
++];
++
++export const getGlobalApiKey = () => {
++  // @ts-ignore
++  let key =
++    process.env.API_KEY ||
++    process.env.GEMINI_API_KEY ||
++    (typeof import.meta !== "undefined" &&
++      (import.meta as any).env?.VITE_GEMINI_API_KEY) ||
++    localStorage.getItem("user_gemini_api_key");
++
++  if (!key || key === "undefined") {
++    // Randomly pick a backup key if no main key is provided
++    key = BACKUP_KEYS[Math.floor(Math.random() * BACKUP_KEYS.length)];
++  }
++  return key;
++};
++
+ // --- GEMINI API EXECUTOR (Image Generation) ---
+ 
+ export const generateNovelImage = async (

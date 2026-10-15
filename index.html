@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>NParte - AI Novel Studio</title>
+    
+    <!-- PWA / Mobile Meta Tags -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="NParte" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+
+    <!-- Modern Typography: Plus Jakarta Sans, Inter & Newsreader -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+              serif: ['Newsreader', 'Georgia', 'serif'],
+              mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+            },
+            colors: {
+              background: 'var(--background)',
+              foreground: 'var(--foreground)',
+              primary: 'var(--primary, #2563eb)',
+              surface: 'var(--surface)',
+            },
+            boxShadow: {
+              'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02)',
+              'card': '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+              'dock': '0 20px 40px -10px rgba(0, 0, 0, 0.12), 0 0 1px 1px rgba(0, 0, 0, 0.04)',
+              'dock-dark': '0 20px 45px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+      @keyframes scaleIn { from { transform: translate(-50%, -50%) scale(0.95); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+      @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+      html {
+        font-size: 13.5px;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        touch-action: manipulation;
+      }
+      @media (min-width: 640px) {
+        html {
+          font-size: 14px;
+        }
+      }
+      @media (min-width: 1024px) {
+        html {
+          font-size: 14.5px;
+        }
+      }
+
+      :root {
+        --background: #fafafc;
+        --surface: #ffffff;
+        --foreground: #0f172a;
+        --primary: #2563eb;
+        --primary-rgb: 37, 99, 235;
+        --primary-glow: rgba(37, 99, 235, 0.12);
+        --primary-glow-heavy: rgba(37, 99, 235, 0.28);
+        --primary-light: rgba(37, 99, 235, 0.06);
+        --primary-light-heavy: rgba(37, 99, 235, 0.12);
+        --primary-light-bg: rgba(37, 99, 235, 0.04);
+        --primary-gradient-end: #4f46e5;
+      }
+      
+      .text-primary {
+        color: var(--primary) !important;
+      }
+      .bg-primary {
+        background-color: var(--primary) !important;
+      }
+      .border-primary {
+        border-color: var(--primary) !important;
+      }
+      
+      .theme-btn-primary {
+        background-color: var(--primary) !important;
+        color: white !important;
+        box-shadow: 0 4px 14px 0 var(--primary-glow-heavy) !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      .theme-btn-primary:hover {
+        opacity: 0.95;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 20px 0 var(--primary-glow-heavy) !important;
+      }
+
+      .theme-accent-gradient {
+        background: linear-gradient(135deg, var(--primary), var(--primary-gradient-end)) !important;
+      }
+      
+      .theme-glow-heavy {
+        box-shadow: 0 8px 24px -4px var(--primary-glow-heavy) !important;
+      }
+      
+      .theme-glow-light {
+        box-shadow: 0 4px 16px -2px var(--primary-glow) !important;
+      }
+
+      .theme-light-bg {
+        background-color: var(--primary-light) !important;
+      }
+      .dark .theme-light-bg {
+        background-color: var(--primary-light-bg) !important;
+      }
+      
+      .theme-border-hover {
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      .theme-border-hover:hover {
+        border-color: var(--primary) !important;
+        box-shadow: 0 4px 16px -2px var(--primary-glow) !important;
+      }
+      
+      /* Group hover utilities */
+      .group:hover .group-hover\:bg-theme {
+        background-color: var(--primary) !important;
+        color: white !important;
+      }
+      .group:hover .group-hover\:border-theme {
+        border-color: var(--primary) !important;
+      }
+      .group:hover .group-hover\:text-theme {
+        color: var(--primary) !important;
+      }
+      .dark {
+        --background: #090a0f;
+        --surface: #12131a;
+        --foreground: #f8fafc;
+      }
+      body {
+        background-color: var(--background);
+        color: var(--foreground);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-family: Inter, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        letter-spacing: -0.01em;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      /* Glassmorphism Utilities */
+      .glass {
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      .dark .glass {
+        background: rgba(18, 19, 26, 0.78);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      /* Floating Dock */
+      .floating-dock {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 16px 36px -8px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.04);
+      }
+      .dark .floating-dock {
+        background: rgba(18, 19, 26, 0.88);
+        box-shadow: 0 20px 45px -10px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+      }
+
+      /* Custom scrollbars */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: rgba(150, 150, 150, 0.2);
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(150, 150, 150, 0.35);
+      }
+
+      /* Ultra-smooth GPU-accelerated lightweight animations */
+      @keyframes smoothFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes smoothSlideUp {
+        from {
+          opacity: 0;
+          transform: translate3d(0, 8px, 0);
+        }
+        to {
+          opacity: 1;
+          transform: translate3d(0, 0, 0);
+        }
+      }
+      @keyframes smoothScaleUp {
+        from {
+          opacity: 0;
+          transform: scale3d(0.96, 0.96, 1);
+        }
+        to {
+          opacity: 1;
+          transform: scale3d(1, 1, 1);
+        }
+      }
+      @keyframes smoothShake {
+        0%, 100% { transform: translate3d(0, 0, 0); }
+        20%, 60% { transform: translate3d(-3px, 0, 0); }
+        40%, 80% { transform: translate3d(3px, 0, 0); }
+      }
+
+      .anim-fade,
+      .anim-fade-in {
+        animation: smoothFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: opacity;
+      }
+      .anim-slide-up {
+        animation: smoothSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: transform, opacity;
+      }
+      .anim-pop,
+      .anim-scale-up,
+      .anim-scale-in {
+        animation: smoothScaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: transform, opacity;
+      }
+      .anim-shake {
+        animation: smoothShake 0.35s ease-in-out;
+      }
+      
+      /* Ultra-Complete Zero-Animation & Performance Mode */
+      html.disable-animations,
+      html.disable-animations *,
+      html.disable-animations *::before,
+      html.disable-animations *::after,
+      body.disable-animations,
+      body.disable-animations *,
+      body.disable-animations *::before,
+      body.disable-animations *::after {
+        animation-duration: 0.0001ms !important;
+        animation-delay: 0s !important;
+        animation-iteration-count: 1 !important;
+        animation: none !important;
+        transition-duration: 0.0001ms !important;
+        transition-delay: 0s !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+        will-change: auto !important;
+      }
+
+      /* Disable all spinning/pulsing/pinging/popping indicators in zero-lag mode */
+      html.disable-animations .animate-spin,
+      html.disable-animations .animate-pulse,
+      html.disable-animations .animate-ping,
+      html.disable-animations .animate-bounce,
+      html.disable-animations .animate-in,
+      html.disable-animations .anim-fade,
+      html.disable-animations .anim-fade-in,
+      html.disable-animations .anim-slide-up,
+      html.disable-animations .anim-pop,
+      html.disable-animations .anim-scale-up,
+      html.disable-animations .anim-scale-in,
+      html.disable-animations .anim-shake,
+      body.disable-animations .animate-spin,
+      body.disable-animations .animate-pulse,
+      body.disable-animations .animate-ping,
+      body.disable-animations .animate-bounce,
+      body.disable-animations .animate-in,
+      body.disable-animations .anim-fade,
+      body.disable-animations .anim-fade-in,
+      body.disable-animations .anim-slide-up,
+      body.disable-animations .anim-pop,
+      body.disable-animations .anim-scale-up,
+      body.disable-animations .anim-scale-in,
+      body.disable-animations .anim-shake {
+        animation: none !important;
+        opacity: 1 !important;
+      }
+
+      /* Disable heavy GPU compositing (backdrop blur & heavy glow) for instant 60fps performance */
+      html.disable-animations .glass,
+      html.disable-animations .floating-dock,
+      html.disable-animations [class*="backdrop-blur"],
+      body.disable-animations .glass,
+      body.disable-animations .floating-dock,
+      body.disable-animations [class*="backdrop-blur"] {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      /* Instant hover effects without transition lag */
+      html.disable-animations .theme-btn-primary,
+      html.disable-animations .theme-border-hover,
+      body.disable-animations .theme-btn-primary,
+      body.disable-animations .theme-border-hover {
+        transition: none !important;
+        transform: none !important;
+      }
+
+      @keyframes cursorBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+      .cursor-blink {
+        animation: cursorBlink 0.8s infinite;
+      }
+      html.disable-animations .cursor-blink,
+      body.disable-animations .cursor-blink {
+        animation: none !important;
+        opacity: 1 !important;
+      }
+    </style>
+  <script>
+    (function() {
+      try {
+        if (localStorage.getItem('user_disable_animations') === 'true') {
+          document.documentElement.classList.add('disable-animations');
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.32.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+  </script>
+</body>
+</html>

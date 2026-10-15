@@ -1,0 +1,8 @@
+{
+  "name": "NParte React",
+  "description": "A specialized AI-powered novel writing assistant designed for strict continuity and long-form chapter generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
